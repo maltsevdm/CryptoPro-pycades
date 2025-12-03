@@ -1,4 +1,4 @@
-FROM python:3.10.11 AS build
+FROM python:3.12.2 AS build
 
 LABEL developer="Miloslavskiy Sergey"
 LABEL maintainer="MiloslavskiySergey@yandex.ru"
@@ -7,12 +7,12 @@ LABEL maintainer="MiloslavskiySergey@yandex.ru"
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        curl \
-        cmake \
-        build-essential \
-        libboost-all-dev \
-        python3-dev \
-        unzip && \
+    curl \
+    cmake \
+    build-essential \
+    libboost-all-dev \
+    python3-dev \
+    unzip && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
@@ -41,17 +41,15 @@ RUN set -ex && \
 # and install the cprocsp-pki-cades package (version 2.0.14071 or later)
 RUN set -ex && \
     mkdir ./cades-linux-amd64 && \
-    tar xvf cades-linux-amd64.tar.gz -C ./cades-linux-amd64 && \
-    ls -lah ./cades-linux-amd64/ && \
-    dpkg -i ./cades-linux-amd64/cprocsp-pki-cades-64_2.0.14530-1_amd64.deb
+    tar xvf cades-linux-amd64.tar.gz && \
+    apt-get install ./cades-linux-amd64/cprocsp-pki-cades-*amd64.deb
 
 # Download and extract the pycades source archive
 # (https://cryptopro.ru/sites/default/files/products/cades/pycades/pycades.zip)
 RUN set -ex && \
-    curl -O https://cryptopro.ru/sites/default/files/products/cades/pycades/pycades.zip && \
     unzip pycades.zip && \
     # Set the value of the Python_INCLUDE_DIR variable in the CMakeList.txt file (Python.h folder)
-    sed -i '2c\SET(Python_INCLUDE_DIR "/usr/local/include/python3.10")' ./pycades_*/CMakeLists.txt
+    sed -i '2c\SET(Python_INCLUDE_DIR "/usr/local/include/python3.12")' ./pycades_*/CMakeLists.txt
 
 # ENV PYCADES="pycades_0.1.30636"
 
@@ -65,7 +63,7 @@ RUN set -ex && \
     make -j4
 
 
-FROM python:3.10.11
+FROM python:3.12.2
 # Adding a new layer
 # ENV PYCADES="pycades_0.1.30636"
 # Copying CryptoPro and expanding pycades from the previous stage
