@@ -67,7 +67,7 @@ FROM python:3.12.2
 # Adding a new layer
 # ENV PYCADES="pycades_0.1.30636"
 # Copying CryptoPro and expanding pycades from the previous stage
-COPY --from=build /cprocsp/pycades_*/pycades.so /usr/local/lib/python3.10/pycades.so
+COPY --from=build /cprocsp/pycades_*/pycades.so /usr/local/lib/python3.12/pycades.so
 
 COPY --from=build /opt/cprocsp /opt/cprocsp/
 
